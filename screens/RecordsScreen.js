@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, } from "react-native"
 import { db } from "../firebaseConfig";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { Image } from "react-native";
 
 export default function RecordsScreen() {
     const [students, setStudents] = useState([]);
@@ -46,6 +47,9 @@ export default function RecordsScreen() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <View style={styles.card}>
+                    <Image source={item.image ? {uri:item.image} : require("../assets/student.png")}
+                    style={styles.studentPhoto}
+                    />
                     <Text>Name: {item.fullName}</Text>
                     <Text>Matric: {item.matricNumber}</Text>
                     <Text>Department: {item.department}</Text>
@@ -69,5 +73,12 @@ const styles = StyleSheet.create({
         padding: 12,
         borderBottomWidth: 1,
         borderBottomColor: "#ddd"
+    },
+    studentPhoto: {
+        width: 70,
+        height: 70,
+        borderRadius: 30,
+        marginBottom: 10,
+        alignSelf: "center",
     },
 });

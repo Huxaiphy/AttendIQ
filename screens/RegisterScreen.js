@@ -154,10 +154,10 @@ export default function RegisterScreen() {
         <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}>
-            <scrollView
-            contentContainerStyle={style.container}
+            <ScrollView
+            contentContainerStyle={styles.container}
             keyboardShouldPersistTaps="handled"
-            ></scrollView>
+            ></ScrollView>
         </KeyboardAvoidingView>
     </View>
     );
