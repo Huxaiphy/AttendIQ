@@ -3,13 +3,12 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function DashboardScreen() {
+export default function DashboardScreen({navigation}) {
 return (
     <View style={styles.menuContainer}>
         <Text style={styles.title}>Dashboard</Text>
         <Text style={styles.subtitle}>Welcome to the AttendIQ Dashboard</Text>
-
-            <TouchableOpacity 
+    <TouchableOpacity 
     style={styles.card}
     onPress={() => navigation.navigate("Register")}
     >
@@ -28,6 +27,13 @@ return (
     onPress={() => navigation.navigate("Records")}
     >
     <Text style={styles.cardText}>Attendance Records</Text>
+    </TouchableOpacity>
+
+        <TouchableOpacity 
+    style={styles.card}
+    onPress={() => navigation.navigate("AttendanceHistory")}
+    >
+    <Text style={styles.cardText}>Attendance History</Text>
     </TouchableOpacity>
 
         <TouchableOpacity 

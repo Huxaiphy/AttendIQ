@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { db } from "../firebaseConfig";
+import { Picker } from "@react-native-picker/picker"
 import * as ImagePicker from "expo-image-picker";
 import { Image, TouchableOpacity } from "react-native";
 import { collection, addDoc } from "firebase/firestore";
@@ -12,8 +13,9 @@ export default function RegisterScreen() {
     const [fullName, setFullName] = useState("");
     const [matricNumber, setMatricNumber] = useState("");
     const [department, setDepartment] = useState("");
+    const [level, setLevel] = useState("");
     const registerStudent = async () => {
-        if (!fullName || !matricNumber || !department) {
+        if (!fullName || !matricNumber || !department || level) {
             alert("Please fill all the fields !");
         return;
     } try {
@@ -22,6 +24,7 @@ export default function RegisterScreen() {
             fullName,
             matricNumber,
             department,
+            level,
         }
         );
          alert ("Student registered!");
@@ -30,29 +33,6 @@ export default function RegisterScreen() {
         alert ("Error registering student");
     }
 };
-
-    /*const saveStudents = async () => {
-        try {
-            await addDoc(collection(db, "students"),{
-                fullName,
-                matricNumber,
-                department,
-                Image,
-                createdAt: new Date(),
-            });
-
-            alert("Student saved successfully!");
-
-            setFullName("");
-            setMatricNumber("");
-            setDepartment("");
-        }
-        catch (error) {
-            console.log(error);
-            alert("Error saving student");
-        }
-        
-    };*/
 
     const [image, setImage] = useState(null);
 
@@ -75,6 +55,7 @@ export default function RegisterScreen() {
                 fullName,
                 matricNumber,
                 department,
+                level,
                 image,
                 createdAt: new Date(),
             });
@@ -82,6 +63,7 @@ export default function RegisterScreen() {
             setFullName("");
             setMatricNumber("");
             setDepartment("");
+            setLevel("");
             setImage(null);
         } catch (error) {
             console.log(error);
@@ -92,7 +74,6 @@ export default function RegisterScreen() {
     return(
         
     <View style={styles.container}>
-       {/* <MaterialCommunityIcons name="clipboard-account" size={100} color="#256" style={{ marginVertical: 20 }}/>*/}
         <Text style={styles.title}>Register Student</Text>
         <TouchableOpacity onPress={pikerImage}>
             {image ? (
@@ -131,23 +112,48 @@ export default function RegisterScreen() {
         value={matricNumber}
         onChangeText={setMatricNumber}
         />
-        <TextInput
+        {/*<TextInput
         placeholder="Department"
         placeholderTextColor="gray"
         style={styles.input}
         value={department}
         onChangeText={setDepartment}
-        />
-       {/* <Button 
-        title="Save Student"
-        onPress={() => {
-            saveStudents();
-            console.log(fullName);
-            console.log(matricNumber);
-            console.log(department);
-            alert(`Name: ${fullName}\nMatric: ${matricNumber}\nDepartment: ${department}`);
-        }}
         />*/}
+
+        <TextInput
+        placeholder="Level"
+        placeholderTextColor="gray"
+        style={styles.input}
+        value={level}
+        onChangeText={setLevel}
+        />
+
+        
+        <Text style={styles.label}>Department</Text>
+        <View style={styles.pickerContainer}>
+            <Picker selectedValue={department} onValueChange={(itemValue) => setDepartment(itemValue)}>
+                <Picker.Item label="Select Department" value=""/>
+                <Picker.Item label="Software Engineering" value="Software Engineering"/>
+                <Picker.Item label="200L" value="Cyber Security"/>
+                <Picker.Item label="Information Technology" value="Information Technology"/>
+                <Picker.Item label="Computer Science" value="Computer Science"/>
+                <Picker.Item label="Promt Engineering" value="Promt Engineering"/>
+                <Picker.Item label="Artificial Intelligence" value="Artificial Intelligence"/>
+                <Picker.Item label="Computer Engineering" value="Computer Engineering"/>
+            </Picker>
+        </View>
+        
+        <Text style={styles.label}>Level</Text>
+        <View style={styles.pickerContainer}>
+            <Picker selectedValue={level} onValueChange={(itemValue) => setLevel(itemValue)}>
+                <Picker.Item label="Select Level" value=""/>
+                <Picker.Item label="100L" value="100L"/>
+                <Picker.Item label="200L" value="200L"/>
+                <Picker.Item label="300L" value="300L"/>
+                <Picker.Item label="400L" value="400L"/>
+                </Picker>
+        </View>
+
         <TouchableOpacity style={styles.button} onPress={saveStudents}>
             <Text style={styles.buttonText}>Save Student</Text>
         </TouchableOpacity>
@@ -211,6 +217,23 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
+    pickerContainer: {
+        width: "100%",
+        height: 55,
+        borderWidth: 1,
+        borderRadius: 12,
+        paddingHorizontal: 15,
+        marginBottom: 15,
+        borderColor: "#D9D9D9",
+        backgroundColor: "#fff"
+    },
+    label: {
+        alignSelf: "flex-start",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginBottom: 5,
+        color: "#333",
+    }
     
 }
 )
