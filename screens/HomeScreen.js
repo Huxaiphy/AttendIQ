@@ -13,37 +13,10 @@ export default function HomeScreen({ navigation }) {
         >
             <Text style={styles.title}>Welcome to AttendIQ</Text>
             <Text style={styles.subtitle}>A Mobile-Base Smart Attendance System Using Face Recognition</Text>
-            <MaterialCommunityIcons name="face-recognition" size={100} color="#256" style={{ marginVertical: 20 }}/>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("Register")}>
-                <Text style={styles.buttonText}>Register Student</Text>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Dashboard")}>
+                <Text style={styles.buttonText}>Get Started</Text>
             </TouchableOpacity>
-           
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("Attendance")}>
-                <Text style={styles.buttonText}>Mark Attendance</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("Records")}>
-                <Text style={styles.buttonText}>View Records</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("AttendanceHistory")}>
-                <Text style={styles.buttonText}>View Attendance History</Text>
-            </TouchableOpacity>
-
-
-            {/*<Button title = "Register student" onPress={() => navigation.navigate("Register")} />
-            <Button title = "View Records" onPress={() => navigation.navigate("Records")} />
-            <Button title = "View Attendance" onPress={() => navigation.navigate("Attendance")} />
-            <Button title = "Attendance History" onPress={() => navigation.navigate("AttendanceHistory")}/>*/}
-        </LinearGradient>
+            </LinearGradient>
     );
 }
 

@@ -1,11 +1,22 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import { db } from "../firebaseConfig";
+import { recognizePerson } from "../utils/faceApi";
+import { CameraView, useCameraPermissions } from "expo-camera"
 import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
 
 export default function AttendanceScreen() {
-    const [students, setStudents] = useState([]);
+    const [showCamera, setShowCamera] = useState(false);
+    const [permission, requestPermission] = useCameraPermissions();
+    const cameraRef = useRef(null);
+    const openCamera = async () => {
+        if(!permission?.granted) {
+            await requestPermission();
+        }
+        setShowCamera(true);
+    };
     
+    const [students, setStudents] = useState([]);
     const fetchStudents = async () => {
         try {
             const querySnapshot = await getDocs(
@@ -88,8 +99,36 @@ export default function AttendanceScreen() {
         }
     };
 
+    const captureImage = async () => {
+        if (!cameraRef.current) return;
+        
+        const photo = await cameraRef.current.takePictureAsync({ quality: 0.7,});
+        console.log("Captured:",photo);
+
+        const recognitionResult = await recognizePerson(photo.uri);
+        console.log("Luxand Result:", recognitionResult);
+    };
+
+    if (showCamera) {
+        return (
+            <View style={{ flex: 1 }}>
+                <CameraView ref={cameraRef} style={{ flex: 1}} facing="front"/>
+                <View style={{
+                    position: "absolute",
+                    bottom: 50,
+                    width: "100%",
+                    alignItems: "center",
+                }}>
+                    <Button title="Capture" onPress={captureImage}/>
+                </View>
+            </View>
+            
+        );
+    }
+    
     return ( 
         <View style={styles.container}>
+             <Button title="Scan Student Face" onPress={openCamera}/>
             <FlatList
             data={students}
             keyExtractor={(item) => item.id
