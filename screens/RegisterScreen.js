@@ -6,7 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageToCloudinary } from "../utils/cloudinary";
-//import { FaceApi } from "../utils/faceApi";
+import { FaceApi } from "../utils/faceApi";
 import { enrollPerson } from "../utils/faceApi";
 import { Image, TouchableOpacity } from "react-native";
 import { collection, addDoc } from "firebase/firestore";
@@ -72,23 +72,32 @@ const saveStudents = async () => {
 
         console.log("Image uploaded:", cloudinaryUrl);
 
-        console.log("Enrolling person in Luxand...");
-        const luxandData = await enrollPerson(fullName, image);
-        if (!luxandData) {
-            alert("Failed to enroll person face in Luxand.");
+        console.log("Enrolling person in Face++...");
+        const faceppData = await enrollPerson(image);
+        if (!faceppData?.success) {
+            alert("Failed to enroll person face in Face++.");
             return;
         }
+        console.log("Face++ enrollment successful:", faceppData);
+        console.log('image', cloudinaryUrl)
 
         // 3. Save student information + Cloudinary URL to Firestore
-        await addDoc(collection(db, "students"), {
+        const data = {
             fullName: fullName,
             matricNumber: matricNumber,
             department: department,
             level: level,
             image: cloudinaryUrl,
             createdAt: new Date(),
-        });
+        };
+          console.log('fRes', fRes);
+     
 
+
+      
+        console.log('frontend data', data)
+
+          const fRes = await addDoc(collection(db, "students"), data);
         // 4. Success
         alert("Student saved successfully!");
 
@@ -100,7 +109,7 @@ const saveStudents = async () => {
         setImage(null);
 
     } catch (error) {
-        console.log("SAVE STUDENT ERROR:", error);
+        console.log("SAVE STUDENT ERROR:", error, error?.message);
         alert("Error saving student: " + error.message);
     }
 };
