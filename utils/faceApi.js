@@ -1,6 +1,5 @@
-import * as FileSystem from "expo-file-system/legacy";
-
-const BACKEND_URL = "http://192.168.193.135:8000";
+const BACKEND_URL =
+  process.env.EXPO_PUBLIC_BACKEND_URL || "http://192.168.193.135:8000";
 
 export const enrollPerson = async (imageUri) => {
   try {
@@ -77,6 +76,48 @@ export const enrollPerson = async (imageUri) => {
 
   } catch (error) {
     console.log("Face++ enrollment error:", error);
+    throw error;
+  }
+};
+
+export const recognizePerson = async (imageUri) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("file", {
+      uri: imageUri,
+      name: "capture.jpg",
+      type: "image/jpeg",
+    });
+
+    const searchResponse = await fetch(`${BACKEND_URL}/search-face`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const searchResult = await searchResponse.json();
+
+    if (!searchResponse.ok) {
+      throw new Error("Face search request failed.");
+    }
+
+    if (searchResult.response?.error_message) {
+      throw new Error(searchResult.response.error_message);
+    }
+
+    const bestMatch = searchResult.response?.results?.[0];
+
+    if (!bestMatch) {
+      return { success: false, faceToken: null, confidence: 0 };
+    }
+
+    return {
+      success: true,
+      faceToken: bestMatch.face_token,
+      confidence: bestMatch.confidence,
+    };
+  } catch (error) {
+    console.log("Face++ recognition error:", error);
     throw error;
   }
 };

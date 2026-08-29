@@ -102,11 +102,32 @@ export default function AttendanceScreen() {
     const captureImage = async () => {
         if (!cameraRef.current) return;
         
-        const photo = await cameraRef.current.takePictureAsync({ quality: 0.7,});
-        console.log("Captured:",photo);
+        try {
+            const photo = await cameraRef.current.takePictureAsync({ quality: 0.7,});
 
-        const recognitionResult = await recognizePerson(photo.uri);
-        console.log("Luxand Result:", recognitionResult);
+            const recognitionResult = await recognizePerson(photo.uri);
+            console.log("Face++ search result:", recognitionResult);
+
+            if (!recognitionResult.success) {
+                alert("No matching student found.");
+                return;
+            }
+
+            const student = students.find(
+                (item) => item.faceToken === recognitionResult.faceToken
+            );
+
+            if (!student) {
+                alert("Recognized face is not linked to a registered student.");
+                return;
+            }
+
+            setShowCamera(false);
+            await markAttendance(student);
+        } catch (error) {
+            console.log(error);
+            alert("Error recognizing face");
+        }
     };
 
     if (showCamera) {

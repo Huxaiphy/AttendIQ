@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontSize: 16,
     },
-    buttonText: {
+    button: {
         width: "100%",
         backgroundColor: "#0B6E99",
         paddingVertical: 15,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     buttonText: {
-        color: "#073861",
+        color: "#fff",
         fontSize: 18,
         fontWeight: "bold"
     },

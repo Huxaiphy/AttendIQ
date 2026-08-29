@@ -1,7 +1,7 @@
 import os
 
 import requests
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from dotenv import load_dotenv
 from fastapi import Body 
 
@@ -11,6 +11,7 @@ app = FastAPI()
 
 FACEPP_API_KEY = os.getenv("FACEPP_API_KEY")
 FACEPP_API_SECRET = os.getenv("FACEPP_API_SECRET")
+FACEPP_FACESET_TOKEN = os.getenv("FACEPP_FACESET_TOKEN")
 
 
 @app.get("/")
@@ -19,7 +20,8 @@ def home():
         "message": "AttendIQ backend is working",
         "facepp_configured": bool(
             FACEPP_API_KEY and FACEPP_API_SECRET
-        )
+        ),
+        "faceset_configured": bool(FACEPP_FACESET_TOKEN)
     }
 
 
@@ -80,7 +82,13 @@ async def detect_face(file: UploadFile = File(...)):
     }
     
 @app.post("/add-face-to-faceset")
-def add_face_to_faceset(face_token: str = Body (..., embed=True)):
+def add_face_to_faceset(face_token: str = Body(..., embed=True)):
+    if not FACEPP_FACESET_TOKEN:
+        raise HTTPException(
+            status_code=500,
+            detail="FACEPP_FACESET_TOKEN is not configured.",
+        )
+
     response = requests.post(
         "https://api-us.faceplusplus.com/facepp/v3/faceset/addface",
         data={
@@ -88,6 +96,38 @@ def add_face_to_faceset(face_token: str = Body (..., embed=True)):
             "api_secret": FACEPP_API_SECRET,
             "faceset_token": FACEPP_FACESET_TOKEN,
             "face_tokens": face_token,
+        },
+    )
+
+    return {
+        "status_code": response.status_code,
+        "response": response.json(),
+    }
+
+
+@app.post("/search-face")
+async def search_face(file: UploadFile = File(...)):
+    if not FACEPP_FACESET_TOKEN:
+        raise HTTPException(
+            status_code=500,
+            detail="FACEPP_FACESET_TOKEN is not configured.",
+        )
+
+    image_bytes = await file.read()
+
+    response = requests.post(
+        "https://api-us.faceplusplus.com/facepp/v3/search",
+        data={
+            "api_key": FACEPP_API_KEY,
+            "api_secret": FACEPP_API_SECRET,
+            "faceset_token": FACEPP_FACESET_TOKEN,
+        },
+        files={
+            "image_file": (
+                file.filename,
+                image_bytes,
+                file.content_type,
+            )
         },
     )
 

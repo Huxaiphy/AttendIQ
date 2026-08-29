@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { db } from "../firebaseConfig";
-import { storage } from "../firebaseConfig";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImageToCloudinary } from "../utils/cloudinary";
-import { FaceApi } from "../utils/faceApi";
 import { enrollPerson } from "../utils/faceApi";
 import { Image, TouchableOpacity } from "react-native";
 import { collection, addDoc } from "firebase/firestore";
@@ -19,26 +16,6 @@ export default function RegisterScreen() {
     const [matricNumber, setMatricNumber] = useState("");
     const [department, setDepartment] = useState("");
     const [level, setLevel] = useState("");
-    const registerStudent = async () => {
-        if (!fullName || !matricNumber || !department || !level || !image) {
-            alert("Please fill all the fields !");
-        return;
-    } try {
-        await addDoc (collection(db, "students"),
-         {
-            fullName,
-            matricNumber,
-            department,
-            level,
-        }
-        );
-         alert ("Student registered!");
-    } catch (error) {
-        console.log("error")
-        alert ("Error registering student");
-    }
-};
-
     const [image, setImage] = useState(null);
 
     const pikerImage = async () => {
@@ -88,16 +65,13 @@ const saveStudents = async () => {
             department: department,
             level: level,
             image: cloudinaryUrl,
+            faceToken: faceppData.faceToken,
             createdAt: new Date(),
         };
-          console.log('fRes', fRes);
-     
 
+        const fRes = await addDoc(collection(db, "students"), data);
+        console.log("Student document created:", fRes.id);
 
-      
-        console.log('frontend data', data)
-
-          const fRes = await addDoc(collection(db, "students"), data);
         // 4. Success
         alert("Student saved successfully!");
 
@@ -133,7 +107,6 @@ const saveStudents = async () => {
                         name="account-circle"
                         size={50}
                         color="#256"
-                        style={{ marginBottom: 20 }}
                         />
                         )}
                         </TouchableOpacity>
