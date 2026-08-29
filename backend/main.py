@@ -11,7 +11,7 @@ app = FastAPI()
 
 FACEPP_API_KEY = os.getenv("FACEPP_API_KEY")
 FACEPP_API_SECRET = os.getenv("FACEPP_API_SECRET")
-
+FACEPP_FACESET_TOKEN = os.getenv("FACEPP_FACESET_TOKEN")
 
 @app.get("/")
 def home():
@@ -94,4 +94,47 @@ def add_face_to_faceset(face_token: str = Body (..., embed=True)):
     return {
         "status_code": response.status_code,
         "response": response.json(),
+    }
+    
+@app.post("/recognize-face")
+async def recognize_face(file: UploadFile = File(...)):
+    image_bytes = await file.read()
+
+    detect_response = requests.post(
+        "https://api-us.faceplusplus.com/facepp/v3/detect",
+        data={
+            "api_key": FACEPP_API_KEY,
+            "api_secret": FACEPP_API_SECRET,
+        },
+        files={
+            "image_file": (file.filename, image_bytes, file.content_type)
+        },
+    )
+    detect_result = detect_response.json()
+    faces = detect_result.get("faces", [])
+
+    if not faces:
+        return {"matched": False, "reason": "no_face_detected"}
+
+    face_token = faces[0]["face_token"]
+
+    search_response = requests.post(
+        "https://api-us.faceplusplus.com/facepp/v3/search",
+        data={
+            "api_key": FACEPP_API_KEY,
+            "api_secret": FACEPP_API_SECRET,
+            "face_token": face_token,
+            "faceset_token": FACEPP_FACESET_TOKEN,
+        },
+    )
+    search_result = search_response.json()
+    results = search_result.get("results", [])
+
+    if not results or results[0]["confidence"] < 80:
+        return {"matched": False, "reason": "no_match"}
+
+    return {
+        "matched": True,
+        "matched_face_token": results[0]["face_token"],
+        "confidence": results[0]["confidence"],
     }

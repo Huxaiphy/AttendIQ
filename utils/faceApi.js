@@ -1,6 +1,6 @@
 import * as FileSystem from "expo-file-system/legacy";
 
-const BACKEND_URL = "http://192.168.193.135:8000";
+const BACKEND_URL = "https://attendiq-lac0.onrender";
 
 export const enrollPerson = async (imageUri) => {
   try {
@@ -79,4 +79,20 @@ export const enrollPerson = async (imageUri) => {
     console.log("Face++ enrollment error:", error);
     throw error;
   }
+};
+
+export const recognizeFace = async (imageUri) => {
+  const formData = new FormData();
+  formData.append("file", {
+    uri: imageUri,
+    name: "capture.jpg",
+    type: "image/jpeg",
+  });
+
+  const response = await fetch(`${BACKEND_URL}/recognize-face`, {
+    method: "POST",
+    body: formData,
+  });
+
+  return await response.json();
 };
