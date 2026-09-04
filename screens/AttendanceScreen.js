@@ -27,8 +27,9 @@ export default function AttendanceScreen() {
         ...doc.data(),
       }));
       setStudents(data);
+      return data;
     } catch (error) {
-      console.log(error);
+      console.log("FETCH STUDENT ERROR:", error);
     }
   };
 
@@ -39,7 +40,7 @@ export default function AttendanceScreen() {
       const snapshot = await getDocs(q);
       setTodayAttendance(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
-      console.log(error);
+      console.log("FETCH TODAY ATTENDANCE ERROR:", error);
     }
   };
 
@@ -58,9 +59,16 @@ export default function AttendanceScreen() {
         return { status: "not_registered" };
       }
 
+      const currentStudents = await 
+      fetchStudent();
+
+      console.log("Student from Firestore:", currentStudents);
+
       const matched = students.find(
         (s) => s.faceToken === result.matched_face_token
       );
+
+      console.log("Matched student:", matched);
 
       if (!matched) {
         return { status: "not_registered" };

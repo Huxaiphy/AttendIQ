@@ -1,6 +1,6 @@
 import * as FileSystem from "expo-file-system/legacy";
 
-const BACKEND_URL = "https://attendiq-lac0.onrender";
+const BACKEND_URL = "https://attendiq-lac0.onrender.com";
 
 export const enrollPerson = async (imageUri) => {
   try {

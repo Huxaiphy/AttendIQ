@@ -88,16 +88,15 @@ const saveStudents = async () => {
             department: department,
             level: level,
             image: cloudinaryUrl,
+            facetoken: faceppData.faceToken,
             createdAt: new Date(),
         };
-          console.log('fRes', fRes);
-     
 
-
-      
         console.log('frontend data', data)
 
           const fRes = await addDoc(collection(db, "students"), data);
+          console.log('fRes', fRes);
+
         // 4. Success
         alert("Student saved successfully!");
 
@@ -133,7 +132,6 @@ const saveStudents = async () => {
                         name="account-circle"
                         size={50}
                         color="#256"
-                        style={{ marginBottom: 20 }}
                         />
                         )}
                         </TouchableOpacity>
