@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "zusecreativelab",
     "name": "AttendIQ",
     "slug": "AttendIQ",
     "version": "1.0.0",
@@ -13,9 +14,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.huzayf.attendiq"
     },
     "android": {
+      "package": "com.huzayf.attendiq",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -24,6 +27,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ae95eaca-42bb-4cd5-b87c-646dde63e912"
+      }
     }
   }
 }
