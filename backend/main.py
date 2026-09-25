@@ -149,3 +149,26 @@ async def recognize_face(file: UploadFile = File(...)):
             "reason": "low_confidence",
             "confidence": confidence,
         }
+        return {
+            "matched": True,
+            "matched_face_token":
+                results[0]["face_token"],
+                "confidence": results[0]
+                ["confidence"],
+        }
+        
+@app.get("/faceset-info")
+def faceset_info():
+    response = requests.post(
+        "https://api-us.faceplusplus.com/facepp/v3/faceset/getdetail",
+        data={
+            "api_key": FACEPP_API_KEY,
+            "api_secret": FACEPP_API_SECRET,
+            "faceset_token": FACEPP_FACESET_TOKEN,
+        },
+    )
+
+    return {
+        "status_code": response.status_code,
+        "response": response.json(),
+    }
