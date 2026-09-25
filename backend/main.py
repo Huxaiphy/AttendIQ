@@ -129,12 +129,23 @@ async def recognize_face(file: UploadFile = File(...)):
     )
     search_result = search_response.json()
     results = search_result.get("results", [])
+    
+    print("Face++ search result:", search_result)
 
-    if not results or results[0]["confidence"] < 80:
-        return {"matched": False, "reason": "no_match"}
-
-    return {
-        "matched": True,
-        "matched_face_token": results[0]["face_token"],
-        "confidence": results[0]["confidence"],
-    }
+    if not results:
+        return {
+            "matched": False,
+            "reason": "no_match_found",
+            "search_result":
+                search_result,
+        }
+        
+    confidence = results[0]
+    ["confidence"]
+    
+    if confidence < 80:
+        return {
+            "matched": False,
+            "reason": "low_confidence",
+            "confidence": confidence,
+        }
