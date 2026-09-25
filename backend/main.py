@@ -172,3 +172,23 @@ def faceset_info():
         "status_code": response.status_code,
         "response": response.json(),
     }
+    
+@app.post("/test-add-face-to-faceset")
+def test_add_face_to_faceset(
+    face_token: str = Body(..., embed=True),
+    faceset_token: str = Body(..., embed=True),
+):
+    response = requests.post(
+        "https://api-us.faceplusplus.com/facepp/v3/faceset/addface",
+        data={
+            "api_key": FACEPP_API_KEY,
+            "api_secret": FACEPP_API_SECRET,
+            "faceset_token": faceset_token,
+            "face_tokens": face_token,
+        },
+    )
+
+    return {
+        "status_code": response.status_code,
+        "response": response.json(),
+    }
