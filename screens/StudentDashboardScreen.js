@@ -14,12 +14,17 @@ export default function StudentDashboardScreen({ navigation }) {
   const fetchStudentData = async () => {
     setLoading(true);
     try {
-      const currentEmail = auth.currentUser?.email;
-      if (!currentEmail) return;
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setStudentInfo(null);
+        setAttendanceRecords([]);
+        setLoading(false);
+       return;
+      }
 
       // Find the student record matching this logged-in user's email
       const studentsRef = collection(db, "students");
-      const studentQuery = query(studentsRef, where("email", "==", currentEmail));
+      const studentQuery = query(studentsRef, where("userId", "==", currentUser.uid));
       const studentSnap = await getDocs(studentQuery);
 
       if (studentSnap.empty) {

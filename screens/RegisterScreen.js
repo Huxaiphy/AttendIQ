@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { db } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { storage } from "../firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Picker } from "@react-native-picker/picker";
@@ -20,12 +20,18 @@ export default function RegisterScreen() {
     const [department, setDepartment] = useState("");
     const [level, setLevel] = useState("");
     const registerStudent = async () => {
+        const userId = auth.currentUser.uid;
+        if (!currentUser) {
+            Alert.alert("Error", "You must be logged in to register a student.");
+        return;        
+    }
         if (!fullName || !matricNumber || !department || !level || !image) {
             alert("Please fill all the fields !");
         return;
     } try {
         await addDoc (collection(db, "students"),
          {
+            userId: auth.currentUser.uid,
             fullName,
             matricNumber,
             department,
@@ -91,7 +97,7 @@ const saveStudents = async () => {
             department: department,
             level: level,
             image: cloudinaryUrl,
-            facetoken: faceppData.faceToken,
+            faceToken: faceppData.faceToken,
             createdAt: new Date(),
         };
 
