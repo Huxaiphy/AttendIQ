@@ -30,6 +30,9 @@ export default function RegisterScreen() {
             matricNumber,
             department,
             level,
+            image: cloudinaryUrl,
+            faceToken: faceppData.faceToken,
+            createdAt: new Date(),
         }
         );
          alert ("Student registered!");
