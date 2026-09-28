@@ -7,6 +7,7 @@ import { auth, db } from "../firebaseConfig";
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +17,7 @@ export default function SignUpScreen({ navigation }) {
     const cleanEmail = email.trim().toLowerCase();
 
     // Validate fields
-    if (!cleanName || !cleanEmail || !password) {
+    if (!cleanName || !cleanEmail || !password || !confirmPassword) {
       Alert.alert(
         "Missing Information",
         "Please enter your full name, email and password."
@@ -28,6 +29,13 @@ export default function SignUpScreen({ navigation }) {
       Alert.alert(
         "Weak Password",
         "Password must contain at least 6 characters."
+      );
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert(
+        "Password Mismatch",
+        "Password and Confirm Password must be the same"
       );
       return;
     }
@@ -147,8 +155,8 @@ export default function SignUpScreen({ navigation }) {
           <TextInput
             placeholder="Confirm Password"
             placeholderTextColor="gray"
-            value={password}
-            onChangeText={setPassword}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
             secureTextEntry
             style={styles.input}
             autoCapitalize="none"

@@ -55,17 +55,29 @@ export const enrollPerson = async (imageUri) => {
 
     const addResult = await addResponse.json();
 
-    console.log("FaceSet response:", addResult);
+    console.log("FaceSet response:",JSON.stringify(addResult, null, 2)
+  );
 
     if (!addResponse.ok) {
       throw new Error("Failed to add face to FaceSet.");
     }
 
-    if (
+   {/* if (
       addResult.response?.error_message
     ) {
       throw new Error(
         addResult.response.error_message
+      );
+    }*/}
+
+    const faceAdded = addResult.response?.face_added;
+
+    if (faceAdded !== 1) {
+      const failureDetail = addResult.respond?.failure_detail;
+
+      console.log("Face++ failed to addface:", JSON.stringify(failureDetail, null, 2));
+      throw new Error(
+        `Face was not added to FaceSet_added=${faceAdded}`
       );
     }
 
