@@ -97,7 +97,7 @@ def add_face_to_faceset(face_token: str = Body (..., embed=True)):
     }
     
 @app.post("/recognize-face")
- async def recognize_face(file: UploadFile = File(...)):
+async def recognize_face(file: UploadFile = File(...)):
     image_bytes = await file.read()
 
     # Step 1: Detect face
@@ -202,7 +202,7 @@ def add_face_to_faceset(face_token: str = Body (..., embed=True)):
     }
     
 #@app.post("/recognize-face")
-a#sync def recognize_face(file: UploadFile = File(...)):
+#sync def recognize_face(file: UploadFile = File(...)):
   #  image_bytes = await file.read()
 
    # detect_response = requests.post(
